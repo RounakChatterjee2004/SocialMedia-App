@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       {" "}
-      <Register></Register>
+      <Profile></Profile>
     </div>
   );
 }
