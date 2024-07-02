@@ -3,6 +3,9 @@ import Sidebar from "../../components/sidebar/sidebar";
 import Feed from "../../components/feed/feed";
 import Rightbar from "../../components/rightbar/rightbar";
 import "./profile.css";
+
+const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+
 export default function Profile() {
   return (
     <>
@@ -14,12 +17,12 @@ export default function Profile() {
             <div className="profileCover">
               <img
                 className="profileCoverImg"
-                src="assets/post/3.jpeg"
+                src={`${PF}/post/3.jpeg`}
                 alt=""
               />
               <img
                 className="profileUserImg"
-                src="assets/person/7.jpeg"
+                src={`${PF}/person/7.jpeg`}
                 alt=""
               />
             </div>
