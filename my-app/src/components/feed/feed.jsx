@@ -9,10 +9,22 @@ export default function Feed({ username }) {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = username
-        ? axios.get("/posts/profile/" + username)
-        : axios.get("/posts/timeline/:userId");
-      setPosts(res.data);
+      try {
+        const res = username
+          ? await axios.get(`/posts/profile/${username}`)
+          : await axios.get("/posts/timeline/:userId");
+
+        // Ensure the response data is an array before setting it to state
+        if (Array.isArray(res.data)) {
+          setPosts(res.data);
+        } else {
+          console.error("Unexpected response data format:", res.data);
+          setPosts([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch posts:", err);
+        setPosts([]);
+      }
     };
     fetchPosts();
   }, [username]);
@@ -21,9 +33,11 @@ export default function Feed({ username }) {
     <div className="feed">
       <div className="feedWrapper">
         <Share />
-        {posts.map((p) => (
-          <Post key={p._id} post={p} />
-        ))}
+        {posts.length > 0 ? (
+          posts.map((p) => <Post key={p._id} post={p} />)
+        ) : (
+          <p>No posts available</p>
+        )}
       </div>
     </div>
   );

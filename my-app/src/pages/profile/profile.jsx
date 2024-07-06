@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Topbar from "../../components/topbar/topbar";
 import Sidebar from "../../components/sidebar/sidebar";
 import Feed from "../../components/feed/feed";
@@ -6,14 +8,14 @@ import "./profile.css";
 import { useParams } from "react-router";
 
 const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-const [user, setUser] = useState([]);
-
-const username = useParams().username;
 
 export default function Profile() {
+  const [user, setUser] = useState([]);
+  const { username } = useParams();
+
   useEffect(() => {
     const fetchUser = async () => {
-      const res = axios.get(`/users?username=${username}`);
+      const res = await axios.get(`/users?username=${username}`);
       setUser(res.data);
     };
     fetchUser();

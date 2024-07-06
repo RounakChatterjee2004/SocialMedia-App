@@ -1,6 +1,27 @@
+import { useContext, useRef } from "react";
 import "./login.css";
+import { CircularProgress } from "@mui/material";
+import { loginCall } from "../../apicalls";
+import { AuthContext } from "../../context/authContext";
 
 export default function Login() {
+  const email = useRef();
+  const password = useRef();
+  const { isFetching, dispatch } = useContext(AuthContext);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    console.log("Login button clicked");
+    console.log("Email:", email.current.value);
+    console.log("Password:", password.current.value);
+    loginCall(
+      { email: email.current.value, password: password.current.value },
+      dispatch
+    );
+  };
+
+  console.log("isFetching:", isFetching); // Debugging log
+
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -11,15 +32,37 @@ export default function Login() {
           </span>
         </div>
         <div className="loginRight">
-          <div className="loginBox">
-            <input placeholder="Email" className="loginInput" />
-            <input placeholder="Password" className="loginInput" />
-            <button className="loginButton">Log In</button>
+          <form className="loginBox" onSubmit={handleClick}>
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              className="loginInput"
+              ref={email}
+            />
+            <input
+              type="password"
+              ref={password}
+              placeholder="Password"
+              className="loginInput"
+              required
+            />
+            <button className="loginButton" type="submit">
+              {isFetching ? (
+                <CircularProgress size={24} style={{ color: "white" }} />
+              ) : (
+                "Log In"
+              )}
+            </button>
             <span className="loginForgot">Forgot Password?</span>
             <button className="loginRegisterButton">
-              Create a New Account
+              {isFetching ? (
+                <CircularProgress size={24} style={{ color: "white" }} />
+              ) : (
+                " Create a New Account"
+              )}{" "}
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
