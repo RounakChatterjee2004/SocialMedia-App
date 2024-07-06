@@ -1,6 +1,35 @@
+import axios from "axios";
+import { useRef } from "react";
 import "./register.css";
+import { useNavigate } from "react-router-dom"; // Import useNavigate instead of useHistory
 
 export default function Register() {
+  const username = useRef();
+  const email = useRef();
+  const password = useRef();
+  const passwordAgain = useRef();
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    if (passwordAgain.current.value !== password.current.value) {
+      passwordAgain.current.setCustomValidity("Passwords don't match!");
+    } else {
+      passwordAgain.current.setCustomValidity(""); // Reset custom validity
+      const user = {
+        username: username.current.value,
+        email: email.current.value,
+        password: password.current.value,
+      };
+      try {
+        await axios.post("/auth/register", user);
+        navigate("/login"); // Use navigate instead of history.push
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -11,14 +40,44 @@ export default function Register() {
           </span>
         </div>
         <div className="loginRight">
-          <div className="loginBox">
-            <input placeholder="Username" className="loginInput" />
-            <input placeholder="Email" className="loginInput" />
-            <input placeholder="Password" className="loginInput" />
-            <input placeholder="Password Again" className="loginInput" />
-            <button className="loginButton">Sign Up</button>
+          <form className="loginBox" onSubmit={handleClick}>
+            <input
+              placeholder="Username"
+              required
+              ref={username}
+              className="loginInput"
+            />
+            <input
+              placeholder="Email"
+              required
+              ref={email}
+              className="loginInput"
+              type="email"
+            />
+            <input
+              placeholder="Password"
+              required
+              ref={password}
+              className="loginInput"
+              type="password"
+              minLength="6"
+            />
+            <input
+              placeholder="Password Again"
+              required
+              ref={passwordAgain}
+              className="loginInput"
+              type="password"
+              onChange={() => {
+                // Reset the custom validity on change in passwordAgain field
+                passwordAgain.current.setCustomValidity("");
+              }}
+            />
+            <button className="loginButton" type="submit">
+              Sign Up
+            </button>
             <button className="loginRegisterButton">Log into Account</button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
